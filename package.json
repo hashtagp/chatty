@@ -1,13 +1,51 @@
 {
-  "name": "chat-app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "chatty-microservices",
+  "version": "2.0.0",
+  "description": "Microservices-based chat application with Auth and Message services",
+  "main": "docker-compose.yml",
   "scripts": {
-    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
-    "start": "npm run start --prefix backend"
+    "install:all": "npm install --prefix auth-service && npm install --prefix message-service && npm install --prefix frontend",
+    "build": "npm run install:all && npm run build --prefix frontend",
+    "start:auth": "npm start --prefix auth-service",
+    "start:messages": "npm start --prefix message-service",
+    "start:frontend": "npm run dev --prefix frontend",
+    "start:services": "concurrently \"npm run start:auth\" \"npm run start:messages\"",
+    "start:all": "concurrently \"npm run start:auth\" \"npm run start:messages\" \"npm run start:frontend\"",
+    "start:docker": "docker-compose up --build",
+    "stop:docker": "docker-compose down",
+    "start:windows": "powershell -ExecutionPolicy Bypass -File ./start-services.ps1",
+    "start:unix": "bash ./start-services.sh",
+    "deploy:auth": "docker-compose -f docker-compose.auth.yml up --build -d",
+    "deploy:messages": "docker-compose -f docker-compose.message.yml up --build -d",
+    "deploy:nginx": "docker-compose -f docker-compose.nginx.yml up --build -d",
+    "stop:auth": "docker-compose -f docker-compose.auth.yml down",
+    "stop:messages": "docker-compose -f docker-compose.message.yml down",
+    "stop:nginx": "docker-compose -f docker-compose.nginx.yml down",
+    "test:auth": "curl http://localhost:3001/health",
+    "test:messages": "curl http://localhost:3002/health",
+    "test:nginx": "curl http://localhost/api/auth/health && curl http://localhost/api/messages/health",
+    "test:microservices": "node test-microservices.js",
+    "test:nginx-mode": "cross-env DEPLOYMENT_MODE=nginx NGINX_BASE_URL=http://localhost node test-microservices.js",
+    "test:all": "npm run test:microservices"
   },
-  "keywords": [],
+  "keywords": [
+    "microservices",
+    "chat",
+    "express",
+    "socket.io",
+    "nginx",
+    "docker"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.9.0"
+  }
 }

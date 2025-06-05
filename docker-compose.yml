@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # Auth Service
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - AUTH_SERVICE_PORT=3001
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - chatty-network
+
+  # Message Service
+  message-service:
+    build: ./message-service
+    ports:
+      - "3002:3002"
+    environment:
+      - MESSAGE_SERVICE_PORT=3002
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - chatty-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - message-service
+    restart: unless-stopped
+    networks:
+      - chatty-network
+
+  # MongoDB (Optional - if you want local MongoDB)
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=chatty
+      - MONGO_INITDB_ROOT_PASSWORD=chatty123
+      - MONGO_INITDB_DATABASE=chatty
+    restart: unless-stopped
+    networks:
+      - chatty-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  chatty-network:
+    driver: bridge

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Message Service Only
+  message-service:
+    build: ./message-service
+    ports:
+      - "${MESSAGE_SERVICE_PORT:-3002}:3002"
+    environment:
+      - MESSAGE_SERVICE_PORT=3002
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    restart: unless-stopped
+    networks:
+      - message-network
+
+networks:
+  message-network:
+    driver: bridge
+
+# Note: MongoDB is removed as we're using MongoDB Atlas cloud service
+# If you need local MongoDB for development, uncomment the following:
+#
+# volumes:
+#   mongodb_data:
+#
+# services:
+#   mongodb:
+#     image: mongo:6.0
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongodb_data:/data/db
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=chatty
+#       - MONGO_INITDB_ROOT_PASSWORD=chatty123
+#       - MONGO_INITDB_DATABASE=chatty
+#     restart: unless-stopped
+#     networks:
+#       - message-network

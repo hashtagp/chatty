@@ -13,12 +13,17 @@ const PORT = process.env.AUTH_SERVICE_PORT || 3001;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: ["http://localhost:5173","https://talksy-chat.netlify.app","https://talksy.tech"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: ["http://localhost:5173","https://talksy-chat.netlify.app","https://talksy.tech"],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400 // Cache preflight request results for 24 hours (in seconds)
+};
+
+// Apply CORS with options
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
+
 
 // Health check endpoint
 app.get("/health", (req, res) => {

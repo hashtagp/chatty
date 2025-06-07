@@ -2,10 +2,11 @@
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "scripts": {
+  "type": "module",  "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build --mode production",
+    "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
   },

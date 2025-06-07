@@ -3,7 +3,8 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "https://api.talksy.tech/api";
+// Get API URL from environment variables with fallback to production
+const BASE_URL = import.meta.env.VITE_API_URL || "https://api.talksy.tech";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,

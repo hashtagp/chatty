@@ -8,10 +8,6 @@
   # Node.js version
   environment = { NODE_VERSION = "18" }
 
-[build.environment]
-  # Production environment variables
-  VITE_NODE_ENV = "production"
-  VITE_API_URL = "https://api.talksy.tech"
 
 # Redirect rules for SPA (Single Page Application)
 [[redirects]]
@@ -40,38 +36,3 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-# Environment-specific deploy contexts
-[context.production]
-  command = "npm run build:prod"
-  [context.production.environment]
-    VITE_NODE_ENV = "production"
-    VITE_API_URL = "https://api.talksy.tech"
-
-[context.deploy-preview]
-  command = "npm run build"
-  [context.deploy-preview.environment]
-    VITE_NODE_ENV = "development"
-    VITE_API_URL = "http://localhost:3000"
-
-[context.branch-deploy]
-  command = "npm run build"
-  [context.branch-deploy.environment]
-    VITE_NODE_ENV = "development"
-    VITE_API_URL = "http://localhost:3000"
-
-# Functions (if needed for serverless functions)
-[functions]
-  directory = "netlify/functions"
-
-# Form handling (if using Netlify forms)
-[build.processing]
-  skip_processing = false
-[build.processing.css]
-  bundle = true
-  minify = true
-[build.processing.js]
-  bundle = true
-  minify = true
-[build.processing.html]
-  pretty_urls = true

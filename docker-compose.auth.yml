@@ -22,23 +22,3 @@ networks:
   auth-network:
     driver: bridge
 
-# Note: MongoDB is removed as we're using MongoDB Atlas cloud service
-# If you need local MongoDB for development, uncomment the following:
-#
-# volumes:
-#   mongodb_data:
-#
-# services:
-#   mongodb:
-#     image: mongo:6.0
-#     ports:
-#       - "27017:27017"
-#     volumes:
-#       - mongodb_data:/data/db
-#     environment:
-#       - MONGO_INITDB_ROOT_USERNAME=chatty
-#       - MONGO_INITDB_ROOT_PASSWORD=chatty123
-#       - MONGO_INITDB_DATABASE=chatty
-#     restart: unless-stopped
-#     networks:
-#       - auth-network
